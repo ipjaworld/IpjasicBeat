@@ -7,7 +7,10 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.io.IOException;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -117,7 +120,13 @@ public class DynamicBeat extends JFrame{
 				Music buttonBasicMusic = new Music("buttonBasicMusic.wav",false);
 				buttonBasicMusic.start();
 				// 게임 시작 버튼 구현
-				intromusic.close();
+				try {
+					intromusic.close();
+				} catch (UnsupportedAudioFileException e) {e.printStackTrace();
+				} catch (IOException e) {e.printStackTrace();
+				} catch (LineUnavailableException e) {e.printStackTrace();
+				}
+				//intromusic.stop();
 				Music selectedMusic = new Music("lostMemory.wav",true);
 				selectedMusic.start();
 				startButton.setVisible(false);

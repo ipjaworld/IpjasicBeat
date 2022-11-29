@@ -3,11 +3,14 @@ package dynamic_beat_7_2;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Music extends Thread{
 	
@@ -47,9 +50,11 @@ public class Music extends Thread{
 //			return 0;
 //	}
 
-	public void close() {
+	public void close() throws UnsupportedAudioFileException,
+    IOException, LineUnavailableException  {
 		isLoop = false;
 		this.interrupt();
+		this.stop();
 	}
 	
 	@Override
