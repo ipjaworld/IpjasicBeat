@@ -79,9 +79,17 @@ public class ScreenImplementation extends JFrame{
 		setBackground(new Color(0, 0, 0, 0));
 		setLayout(null);
 		
-		pasmFirst = new PlayAndStopMusic("default", false, 2);
-		//pasm.start();
+		pasmFirst = new PlayAndStopMusic("default", true, 2);
+		//pasmFirst.start();
+		try {
+			pasmFirst.start();
+			
+			Thread.sleep(3000);
+			pasmFirst.close();
+		} catch (InterruptedException e) {e.printStackTrace();
+		}
 		
+		//pasmFirst.interrupt();
 		// 게임에 사용할 음악들을 Track 이라는 어레이 리스트에 담는 작업입니다.
 		// 첫번째 곡, 디폴트로 처음부터 시작될 음악, 인덱스 0번
 		String FistTrack = "lostMemory";
@@ -154,7 +162,7 @@ public class ScreenImplementation extends JFrame{
 			public void mousePressed(MouseEvent E){
 				PlayAndStopMusic buttonBasicMusic = new PlayAndStopMusic("buttonBasicMusic.wav",false,1);
 				buttonBasicMusic.start();
-				pasmFirst.interrupt();
+				//pasmFirst.interrupt();
 				// 게임 시작 버튼 구현
 				/*
 				try {

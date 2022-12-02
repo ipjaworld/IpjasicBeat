@@ -58,10 +58,9 @@ public class PlayAndStopMusic extends Thread{
 	}
 	
 	// close() clip에 쓰는 메서드를 오버라이딩했지만 실행 취소하였습니다.
-	
-	public void close() throws UnsupportedAudioFileException,
-    IOException, LineUnavailableException  {
-		isLoop = false;
+	// 22.12.01에 interrupt 메서드는 이상이 없이 잘 실행이 되는 것을 확인
+	public void close()  {
+		this.isLoop = false;
 		this.interrupt();
 	}
 	
@@ -74,7 +73,7 @@ public class PlayAndStopMusic extends Thread{
 //				Clip clip = AudioSystem.getClip();
 //				clip.open(ais);
 //				clip.loop(Clip.LOOP_CONTINUOUSLY);
-				System.out.println("쓰레드가 잘 동작하고 있습니다.");
+				//System.out.println("쓰레드가 잘 동작하고 있습니다.");
 			}while(isLoop);
 		}catch(Exception e){
 			e.printStackTrace();

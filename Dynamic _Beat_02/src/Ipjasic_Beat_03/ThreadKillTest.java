@@ -27,7 +27,13 @@ public class ThreadKillTest extends Thread{
 		tk.start();
 		
 		Thread.sleep(2000);
-		tk.interrupt();
+		//tk.interrupt();
+		try {
+			tk.close();
+		} catch (UnsupportedAudioFileException e) {e.printStackTrace();
+		} catch (IOException e) {e.printStackTrace();
+		} catch (LineUnavailableException e) {e.printStackTrace();
+		}
 	}
 	
 	public ThreadKillTest() {	
