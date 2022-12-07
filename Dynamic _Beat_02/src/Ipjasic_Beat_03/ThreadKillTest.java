@@ -62,7 +62,7 @@ public class ThreadKillTest extends Thread{
     IOException, LineUnavailableException  {
 		isLoop = false;
 		this.interrupt();
-		this.stop();
+		//this.stop();
 	}
 	
 	@Override

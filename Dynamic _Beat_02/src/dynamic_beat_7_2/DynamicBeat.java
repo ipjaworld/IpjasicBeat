@@ -122,11 +122,13 @@ public class DynamicBeat extends JFrame{
 				// 게임 시작 버튼 구현
 				try {
 					intromusic.close();
+					intromusic.stop();
+					intromusic.setLoop(false);
+					//System.out.println("시작 화면에서 게임 화면으로 넘어갈게요");
 				} catch (UnsupportedAudioFileException e) {e.printStackTrace();
 				} catch (IOException e) {e.printStackTrace();
 				} catch (LineUnavailableException e) {e.printStackTrace();
 				}
-				//intromusic.stop();
 				Music selectedMusic = new Music("lostMemory.wav",true);
 				selectedMusic.start();
 				startButton.setVisible(false);

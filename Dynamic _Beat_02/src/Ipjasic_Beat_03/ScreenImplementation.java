@@ -81,13 +81,11 @@ public class ScreenImplementation extends JFrame{
 		
 		pasmFirst = new PlayAndStopMusic("default", true, 2);
 		//pasmFirst.start();
-		try {
-			pasmFirst.start();
-			
-			Thread.sleep(3000);
-			pasmFirst.close();
-		} catch (InterruptedException e) {e.printStackTrace();
-		}
+		
+		pasmFirst.start();
+		//Thread.sleep(3000);
+		//pasmFirst.close();
+		
 		
 		//pasmFirst.interrupt();
 		// 게임에 사용할 음악들을 Track 이라는 어레이 리스트에 담는 작업입니다.
@@ -174,7 +172,8 @@ public class ScreenImplementation extends JFrame{
 				*/
 				//PlayAndStopMusic selectedMusic = new PlayAndStopMusic("lostMemory.wav",true);
 				//selectedMusic.start();
-				//selectedMusic.interrupt();
+				//pasmFirst.close();
+				pasmFirst = new PlayAndStopMusic("default", false, 4);
 				selectTrack(0);
 				startButton.setVisible(false);
 				quitButton.setVisible(false);

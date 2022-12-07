@@ -44,6 +44,8 @@ public class Music extends Thread{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
+		
+		
 	}
 //	public int getTime() {
 //		if(file == null)
@@ -55,8 +57,19 @@ public class Music extends Thread{
 		isLoop = false;
 		this.interrupt();
 		this.stop();
+		
+		//this.close();
+		System.out.println("닫았습니다.");
 	}
 	
+	public boolean isLoop() {
+		return isLoop;
+	}
+
+	public void setLoop(boolean isLoop) {
+		this.isLoop = isLoop;
+	}
+
 	@Override
 	public void run() {
 		try {

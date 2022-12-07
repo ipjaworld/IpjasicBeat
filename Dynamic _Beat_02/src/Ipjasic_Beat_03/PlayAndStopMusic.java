@@ -61,6 +61,10 @@ public class PlayAndStopMusic extends Thread{
 	// 22.12.01에 interrupt 메서드는 이상이 없이 잘 실행이 되는 것을 확인
 	public void close()  {
 		this.isLoop = false;
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {e.printStackTrace();
+		}
 		this.interrupt();
 	}
 	
