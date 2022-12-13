@@ -32,7 +32,7 @@ public class Music extends Thread{
 			// 볼륨 조절
 			gainControl.setValue(-15.0f);
 			clip.loop(Clip.LOOP_CONTINUOUSLY); // java 에서 무한루프를 할 수 있게 해주는 메서드
-			//clip.start();
+			clip.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 

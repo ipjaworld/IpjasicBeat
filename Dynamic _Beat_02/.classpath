@@ -6,6 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/JAVA01/git/IpjasicBeat/Dynamic _Beat_02/src/code/audio/test/SwingAudioPlayer.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tbrk7/git/IpjasicBeat/Dynamic _Beat_02/src/code/audio/test/lib/SwingAudioPlayer.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tbrk7/git/IpjasicBeat/Dynamic _Beat_02/src/code/audio/test/lib/jlayer-1.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

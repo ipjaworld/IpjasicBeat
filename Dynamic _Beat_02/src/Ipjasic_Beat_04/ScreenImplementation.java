@@ -43,7 +43,14 @@ public class ScreenImplementation extends JFrame{
 	private ImageIcon rightButtonEnteredImage = new ImageIcon(MainAction.class.getResource("../images/rightButtonEntered.png"));
 	private ImageIcon rightButtonBasicImage = new ImageIcon(MainAction.class.getResource("../images/rightButtonBasic.png"));
 	
+	private ImageIcon easyButtonEnteredImage = new ImageIcon(MainAction.class.getResource("../images/easyButtonEntered.png"));
+	private ImageIcon easyButtonBasicImage = new ImageIcon(MainAction.class.getResource("../images/easyButtonBasic.png"));
+	private ImageIcon hardButtonEnteredImage = new ImageIcon(MainAction.class.getResource("../images/hardButtonEntered.png"));
+	private ImageIcon hardButtonBasicImage = new ImageIcon(MainAction.class.getResource("../images/hardButtonBasic.png"));
 
+	private ImageIcon backButtonEnteredImage = new ImageIcon(MainAction.class.getResource("../images/hardButtonEntered.png"));
+	private ImageIcon backButtonBasicImage = new ImageIcon(MainAction.class.getResource("../images/hardButtonBasic.png"));
+	
 	//private Image selectedImage = new ImageIcon(MainAction.class.getResource("../images/whitewallpaper.jpg")).getImage();
 	private Image background = new ImageIcon(MainAction.class.getResource("../images/whitewallpaper.jpg")).getImage();
 	
@@ -54,6 +61,8 @@ public class ScreenImplementation extends JFrame{
 	private JButton quitButton = new JButton(quitButtonBasicImage);
 	private JButton leftButton = new JButton(leftButtonBasicImage);
 	private JButton rightButton = new JButton(rightButtonBasicImage);
+	private JButton easyButton = new JButton(easyButtonBasicImage);
+	private JButton hardButton = new JButton(hardButtonBasicImage);
 	
 	
 	private int mouseX, mouseY;
@@ -67,6 +76,9 @@ public class ScreenImplementation extends JFrame{
 	private Image titleImage;
 	private Image selectedImage;
 	private int nowSelected = 0;
+	
+	
+	
 	
 	public ScreenImplementation() {
 		setUndecorated(true);
@@ -84,7 +96,7 @@ public class ScreenImplementation extends JFrame{
 		try {
 			pasmFirst.start();
 			
-			Thread.sleep(3000);
+			Thread.sleep(100);
 			pasmFirst.close();
 		} catch (InterruptedException e) {e.printStackTrace();
 		}
@@ -175,11 +187,14 @@ public class ScreenImplementation extends JFrame{
 				//PlayAndStopMusic selectedMusic = new PlayAndStopMusic("lostMemory.wav",true);
 				//selectedMusic.start();
 				//selectedMusic.interrupt();
-				selectTrack(0);
+				
 				startButton.setVisible(false);
 				quitButton.setVisible(false);
+				selectTrack(0);
 				leftButton.setVisible(true);
 				rightButton.setVisible(true);
+				easyButton.setVisible(true);
+				hardButton.setVisible(true);
 				background = new ImageIcon(MainAction.class.getResource("../images/mainBackground.jpg")).getImage();
 				isMainScreen = true;
 			}
@@ -274,6 +289,79 @@ public class ScreenImplementation extends JFrame{
 			}
 		});
 		add(rightButton);
+		
+		
+		// easy 모드 버튼
+		easyButton.setVisible(false);
+		easyButton.setBounds(260, 550, 250, 141);
+		easyButton.setBorderPainted(false);
+		easyButton.setContentAreaFilled(false);
+		easyButton.setFocusPainted(false);
+		easyButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent E) {
+				easyButton.setIcon(easyButtonEnteredImage);
+				easyButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				PlayAndStopMusic buttonEnteredMusic = new PlayAndStopMusic("buttonEnteredMusic.wav",false,1);
+				buttonEnteredMusic.start();
+			}
+			@Override
+			public void mouseExited(MouseEvent E) {
+				easyButton.setIcon(easyButtonBasicImage);
+				easyButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+			@Override
+			public void mousePressed(MouseEvent E){
+				PlayAndStopMusic buttonBasicMusic = new PlayAndStopMusic("buttonBasicMusic.wav",false,1);
+				buttonBasicMusic.start();
+				
+				selectTrack(0);
+				leftButton.setVisible(false);
+				rightButton.setVisible(false);
+				easyButton.setVisible(false);
+				hardButton.setVisible(false);
+				background = new ImageIcon(MainAction.class.getResource("../images/" + trackList.get(nowSelected).getGameImage() )).getImage();
+				isMainScreen = false;
+			}
+		});
+		add(easyButton);
+		
+		
+		// hard 모드 버튼
+		hardButton.setVisible(false);
+		hardButton.setBounds(760, 550, 250, 141);
+		hardButton.setBorderPainted(false);
+		hardButton.setContentAreaFilled(false);
+		hardButton.setFocusPainted(false);
+		hardButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent E) {
+				hardButton.setIcon(hardButtonEnteredImage);
+				hardButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				PlayAndStopMusic buttonEnteredMusic = new PlayAndStopMusic("buttonEnteredMusic.wav",false,1);
+				buttonEnteredMusic.start();
+			}
+			@Override
+			public void mouseExited(MouseEvent E) {
+				hardButton.setIcon(hardButtonBasicImage);
+				hardButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+			@Override
+			public void mousePressed(MouseEvent E){
+				PlayAndStopMusic buttonBasicMusic = new PlayAndStopMusic("buttonBasicMusic.wav",false,1);
+				buttonBasicMusic.start();
+				
+				selectTrack(0);
+				leftButton.setVisible(false);
+				rightButton.setVisible(false);
+				easyButton.setVisible(false);
+				hardButton.setVisible(false);
+				background = new ImageIcon(MainAction.class.getResource("../images/" + trackList.get(nowSelected).getGameImage() )).getImage();
+				isMainScreen = false;
+			}
+		});
+		add(hardButton);
+		
 		
 		// 메뉴바 디자인
 		menuBar.setBounds(0, 0, 1280, 30);
