@@ -1,17 +1,17 @@
-package Ipjasic_Beat_04_s;
+package Ipjasic_Beat_09;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -43,30 +43,44 @@ public class ScreenImplementation extends JFrame{
 	private ImageIcon rightButtonEnteredImage = new ImageIcon(MainAction.class.getResource("../images/rightButtonEntered.png"));
 	private ImageIcon rightButtonBasicImage = new ImageIcon(MainAction.class.getResource("../images/rightButtonBasic.png"));
 	
+	private ImageIcon easyButtonEnteredImage = new ImageIcon(MainAction.class.getResource("../images/easyButtonEntered.png"));
+	private ImageIcon easyButtonBasicImage = new ImageIcon(MainAction.class.getResource("../images/easyButtonBasic.png"));
+	private ImageIcon hardButtonEnteredImage = new ImageIcon(MainAction.class.getResource("../images/hardButtonEntered.png"));
+	private ImageIcon hardButtonBasicImage = new ImageIcon(MainAction.class.getResource("../images/hardButtonBasic.png"));
 
-	//private Image selectedImage = new ImageIcon(MainAction.class.getResource("../images/whitewallpaper.jpg")).getImage();
-	private Image background = new ImageIcon(MainAction.class.getResource("../images/whitewallpaper.jpg")).getImage();
+	//private ImageIcon backButtonEnteredImage = new ImageIcon(MainAction.class.getResource("../images/backButtonEntered.png"));
+	private ImageIcon backButtonBasicImage = new ImageIcon(MainAction.class.getResource("../images/backButtonBasic.png"));
+	private ImageIcon backButtonEnteredImage = new ImageIcon(MainAction.class.getResource("../images/backButtonBasic.png"));
 	
+	//private Image selectedImage = new ImageIcon(MainAction.class.getResource("../images/whitewallpaper.jpg")).getImage();
+	
+	private Image background = new ImageIcon(MainAction.class.getResource("../images/whitewallpaper.jpg")).getImage();
 	private JLabel menuBar = new JLabel(new ImageIcon(MainAction.class.getResource("../images/munuBar.png")));
+	//private JLabel gameBottomArea = new JLabel(new ImageIcon(MainAction.class.getResource("../images/gameBottomArea.png")));
 	
 	private JButton exitButton = new JButton(exitButtonBasicImage);
 	private JButton startButton = new JButton(startButtonBasicImage);
 	private JButton quitButton = new JButton(quitButtonBasicImage);
 	private JButton leftButton = new JButton(leftButtonBasicImage);
 	private JButton rightButton = new JButton(rightButtonBasicImage);
-	
+	private JButton easyButton = new JButton(easyButtonBasicImage);
+	private JButton hardButton = new JButton(hardButtonBasicImage);
+	private JButton backButton = new JButton(backButtonBasicImage);
 	
 	private int mouseX, mouseY;
 	
 	private boolean isMainScreen = false;
+	private boolean isGameScreen = false;
 	
 	static ArrayList<Track> trackList = new ArrayList<>();
 	
-	public Music selectedMusic;
-	public Music pasmFirst;
+	public PlayAndStopMusic selectedMusic;
 	private Image titleImage;
 	private Image selectedImage;
 	private int nowSelected = 0;
+	
+	public static Game game;
+	
 	
 	public ScreenImplementation() {
 		setUndecorated(true);
@@ -79,34 +93,28 @@ public class ScreenImplementation extends JFrame{
 		setBackground(new Color(0, 0, 0, 0));
 		setLayout(null);
 		
-		pasmFirst = Music.getInstance();
-		//pasmFirst.start();
-		try {
-			pasmFirst.start();
-			
-			Thread.sleep(3000);
-			pasmFirst.close();
-		} catch (InterruptedException e) {e.printStackTrace();
-		}
+		addKeyListener(new KeyListener());
 		
-		//pasmFirst.interrupt();
+		selectedMusic = new PlayAndStopMusic("asterisk.mp3", true);
+		selectedMusic.start();
+		
 		// 게임에 사용할 음악들을 Track 이라는 어레이 리스트에 담는 작업입니다.
 		// 첫번째 곡, 디폴트로 처음부터 시작될 음악, 인덱스 0번
-		String FistTrack = "lostMemory";
+		String FistTrack = "saintTail";
 		trackList.add(new Track(FistTrack+"TitleImage.png",FistTrack+"StartImage.png",
-				FistTrack+"GameImage.png",FistTrack+".wav",FistTrack+".wav"));
+				FistTrack+"GameImage.png",FistTrack+"BFS.mp3",FistTrack+".mp3", "SaintTail - SaintTail"));
 		// 두번째 곡, 인덱스 1번
-		String SecondTrack = "saintTail";
+		String SecondTrack = "squareworld";
 		trackList.add(new Track(SecondTrack+"TitleImage.png",SecondTrack+"StartImage.png",
-				SecondTrack+"GameImage.png",SecondTrack+".wav",SecondTrack+".wav"));
+				SecondTrack+"GameImage.png",SecondTrack+"BFS.mp3",SecondTrack+".mp3", "SquareWorld - DigimonRPG"));
 		// 세번째 곡, 인덱스 2번
-		String ThirdTrack = "squareworld";
+		String ThirdTrack = "lostMemory";
 		trackList.add(new Track(ThirdTrack+"TitleImage.png",ThirdTrack+"StartImage.png",
-				ThirdTrack+"GameImage.png",ThirdTrack+".wav",ThirdTrack+".wav"));
+				ThirdTrack+"GameImage.png",ThirdTrack+"BFS.mp3",ThirdTrack+".mp3", "Lost Memory - Goblin"));
 		// 네번째 곡, 인덱스 3번
 		String FourthTrack = "samurai";
 		trackList.add(new Track(FourthTrack+"TitleImage.png",FourthTrack+"StartImage.png",
-				FourthTrack+"GameImage.png",FourthTrack+".wav",FourthTrack+".wav"));
+				FourthTrack+"GameImage.png",FourthTrack+"BFS.mp3",FourthTrack+".mp3", "Samurai - DefKev"));
 
 		// 우상단 게임 종료 버튼
 		exitButton.setBounds(1245, 0, 30, 30);
@@ -118,8 +126,7 @@ public class ScreenImplementation extends JFrame{
 			public void mouseEntered(MouseEvent E) {
 				exitButton.setIcon(exitButtonEnteredImage);
 				exitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				Music buttonEnteredMusic = Music.getInstance();
-				buttonEnteredMusic.PlayAndStopMusic("buttonEnteredMusic.wav",false,1);
+				PlayAndStopMusic buttonEnteredMusic = new PlayAndStopMusic("buttonEnteredMusic.mp3",false);
 				buttonEnteredMusic.start();
 			}
 			@Override
@@ -129,8 +136,7 @@ public class ScreenImplementation extends JFrame{
 			}
 			@Override
 			public void mousePressed(MouseEvent E){
-				Music buttonBasicMusic = Music.getInstance();
-				buttonBasicMusic.PlayAndStopMusic("buttonBasicMusic.wav",false,1);
+				PlayAndStopMusic buttonBasicMusic = new PlayAndStopMusic("buttonBasicMusic.mp3",false);
 				buttonBasicMusic.start();
 				try {
 					Thread.sleep(1000);
@@ -152,8 +158,7 @@ public class ScreenImplementation extends JFrame{
 			public void mouseEntered(MouseEvent E) {
 				startButton.setIcon(startButtonEnteredImage);
 				startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				Music buttonEnteredMusic = Music.getInstance();
-				buttonEnteredMusic.PlayAndStopMusic("buttonEnteredMusic.wav",false,1);
+				PlayAndStopMusic buttonEnteredMusic = new PlayAndStopMusic("buttonEnteredMusic.mp3",false);
 				buttonEnteredMusic.start();
 			}
 			@Override
@@ -163,29 +168,11 @@ public class ScreenImplementation extends JFrame{
 			}
 			@Override
 			public void mousePressed(MouseEvent E){
-				Music buttonBasicMusic = Music.getInstance();
-				buttonBasicMusic.PlayAndStopMusic("buttonBasicMusic.wav",false,1);
+				PlayAndStopMusic buttonBasicMusic = new PlayAndStopMusic("buttonBasicMusic.mp3",false);
 				buttonBasicMusic.start();
-				//pasmFirst.interrupt();
-				// 게임 시작 버튼 구현
-				/*
-				try {
-					pasm.close();
-				} catch (UnsupportedAudioFileException e) {e.printStackTrace();
-				} catch (IOException e) {e.printStackTrace();
-				} catch (LineUnavailableException e) {e.printStackTrace();
-				}
-				*/
-				//PlayAndStopMusic selectedMusic = new PlayAndStopMusic("lostMemory.wav",true);
-				//selectedMusic.start();
-				//selectedMusic.interrupt();
-				selectTrack(0);
-				startButton.setVisible(false);
-				quitButton.setVisible(false);
-				leftButton.setVisible(true);
-				rightButton.setVisible(true);
-				background = new ImageIcon(MainAction.class.getResource("../images/mainBackground.jpg")).getImage();
-				isMainScreen = true;
+				//selectedMusic.close();
+				//moveToMain();
+				enterMain();
 			}
 		});
 		add(startButton);
@@ -200,8 +187,7 @@ public class ScreenImplementation extends JFrame{
 			public void mouseEntered(MouseEvent E) {
 				quitButton.setIcon(quitButtonEnteredImage);
 				quitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				Music buttonEnteredMusic = Music.getInstance();
-				buttonEnteredMusic.PlayAndStopMusic("buttonEnteredMusic.wav",false,1);
+				PlayAndStopMusic buttonEnteredMusic = new PlayAndStopMusic("buttonEnteredMusic.mp3",false);
 				buttonEnteredMusic.start();
 			}
 			@Override
@@ -211,8 +197,7 @@ public class ScreenImplementation extends JFrame{
 			}
 			@Override
 			public void mousePressed(MouseEvent E){
-				Music buttonBasicMusic = Music.getInstance();
-				buttonBasicMusic.PlayAndStopMusic("buttonBasicMusic.wav",false,1);
+				PlayAndStopMusic buttonBasicMusic = new PlayAndStopMusic("buttonBasicMusic.mp3",false);
 				buttonBasicMusic.start();
 				// 현재 게임 종료 버튼
 				try {
@@ -236,8 +221,7 @@ public class ScreenImplementation extends JFrame{
 			public void mouseEntered(MouseEvent E) {
 				leftButton.setIcon(leftButtonEnteredImage);
 				leftButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				Music buttonEnteredMusic = Music.getInstance();
-				buttonEnteredMusic.PlayAndStopMusic("buttonEnteredMusic.wav",false,1);
+				PlayAndStopMusic buttonEnteredMusic = new PlayAndStopMusic("buttonEnteredMusic.mp3",false);
 				buttonEnteredMusic.start();
 			}
 			@Override
@@ -247,8 +231,7 @@ public class ScreenImplementation extends JFrame{
 			}
 			@Override
 			public void mousePressed(MouseEvent E){
-				Music buttonBasicMusic = Music.getInstance();
-				buttonBasicMusic.PlayAndStopMusic("buttonBasicMusic.wav",false,1);
+				PlayAndStopMusic buttonBasicMusic = new PlayAndStopMusic("buttonBasicMusic.mp3",false);
 				buttonBasicMusic.start();
 				selectLeft();
 			}
@@ -266,8 +249,7 @@ public class ScreenImplementation extends JFrame{
 			public void mouseEntered(MouseEvent E) {
 				rightButton.setIcon(rightButtonEnteredImage);
 				rightButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				Music buttonEnteredMusic = Music.getInstance();
-				buttonEnteredMusic.PlayAndStopMusic("buttonEnteredMusic.wav",false,1);
+				PlayAndStopMusic buttonEnteredMusic = new PlayAndStopMusic("buttonEnteredMusic.mp3",false);
 				buttonEnteredMusic.start();
 			}
 			@Override
@@ -277,13 +259,100 @@ public class ScreenImplementation extends JFrame{
 			}
 			@Override
 			public void mousePressed(MouseEvent E){
-				Music buttonBasicMusic = Music.getInstance();
-				buttonBasicMusic.PlayAndStopMusic("buttonBasicMusic.wav",false,1);
+				PlayAndStopMusic buttonBasicMusic = new PlayAndStopMusic("buttonBasicMusic.mp3",false);
 				buttonBasicMusic.start();
 				selectRight();
 			}
 		});
 		add(rightButton);
+		
+		
+		// easy 모드 버튼
+		easyButton.setVisible(false);
+		easyButton.setBounds(260, 550, 250, 141);
+		easyButton.setBorderPainted(false);
+		easyButton.setContentAreaFilled(false);
+		easyButton.setFocusPainted(false);
+		easyButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent E) {
+				easyButton.setIcon(easyButtonEnteredImage);
+				easyButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				PlayAndStopMusic buttonEnteredMusic = new PlayAndStopMusic("buttonEnteredMusic.mp3",false);
+				buttonEnteredMusic.start();
+			}
+			@Override
+			public void mouseExited(MouseEvent E) {
+				easyButton.setIcon(easyButtonBasicImage);
+				easyButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+			@Override
+			public void mousePressed(MouseEvent E){
+				PlayAndStopMusic buttonBasicMusic = new PlayAndStopMusic("buttonBasicMusic.mp3",false);
+				buttonBasicMusic.start();
+				gameStart("Easy");
+			}
+		});
+		add(easyButton);
+		
+		
+		// hard 모드 버튼
+		hardButton.setVisible(false);
+		hardButton.setBounds(760, 550, 250, 141);
+		hardButton.setBorderPainted(false);
+		hardButton.setContentAreaFilled(false);
+		hardButton.setFocusPainted(false);
+		hardButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent E) {
+				hardButton.setIcon(hardButtonEnteredImage);
+				hardButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				PlayAndStopMusic buttonEnteredMusic = new PlayAndStopMusic("buttonEnteredMusic.mp3",false);
+				buttonEnteredMusic.start();
+			}
+			@Override
+			public void mouseExited(MouseEvent E) {
+				hardButton.setIcon(hardButtonBasicImage);
+				hardButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+			@Override
+			public void mousePressed(MouseEvent E){
+				PlayAndStopMusic buttonBasicMusic = new PlayAndStopMusic("buttonBasicMusic.mp3",false);
+				buttonBasicMusic.start();
+				gameStart("Hard");
+			}
+		});
+		add(hardButton);
+		
+		
+		// 게임 화면에서 back 버튼(메인으로 돌아갑니다.)
+		backButton.setVisible(false);
+		backButton.setBounds(40, 400, 120, 120);
+		backButton.setBorderPainted(false);
+		backButton.setContentAreaFilled(false);
+		backButton.setFocusPainted(false);
+		backButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent E) {
+				backButton.setIcon(backButtonEnteredImage);
+				backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				PlayAndStopMusic buttonEnteredMusic = new PlayAndStopMusic("buttonEnteredMusic.mp3",false);
+				buttonEnteredMusic.start();
+			}
+			@Override
+			public void mouseExited(MouseEvent E) {
+				backButton.setIcon(backButtonBasicImage);
+				backButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+			@Override
+			public void mousePressed(MouseEvent E){
+				PlayAndStopMusic buttonBasicMusic = new PlayAndStopMusic("buttonBasicMusic.mp3",false);
+				buttonBasicMusic.start();
+				moveToMain();
+			}
+		});
+		add(backButton);
+		
 		
 		// 메뉴바 디자인
 		menuBar.setBounds(0, 0, 1280, 30);
@@ -303,38 +372,68 @@ public class ScreenImplementation extends JFrame{
 			}
 		});
 		add(menuBar);
+		
+		
+		// 인게임 밑의 영역 디자인
+		/*
+		gameBottomArea.setBounds(0, 640, 1280, 80);
+		add(gameBottomArea);
+		gameBottomArea.setVisible(false);*/
+		
 	}
 	
 	public void paint(Graphics g) {
 		screenImage = createImage(MainAction.SCREEN_WIDTH, MainAction.SCREEN_HEIGHT);
 		screenGraphic = screenImage.getGraphics();
-		screenDraw(screenGraphic);
+		screenDraw((Graphics2D) screenGraphic);
 		g.drawImage(screenImage, 0, 0, null);
 	}
 
-	private void screenDraw(Graphics g) {
+	private void screenDraw(Graphics2D g) {
+		//String nowTrackTitle = getTrackTitle();
+		
 		g.drawImage(background, 0, 0, null);
 		if(isMainScreen)
 		{
 			g.drawImage(selectedImage, 340, 100, null);
 			g.drawImage(titleImage, 340, 70, null);
 		}
+		if(isGameScreen)
+		{
+			game.screenDraw(g);
+		}
 		paintComponents(g);
 		this.repaint();
 	}
+	
+	/*
+	private String getTrackTitle() {
+		String ntt = "";
+		switch(nowSelected) {
+		case 0: ntt = "SaintTail - SaintTail";
+		case 1: ntt = "SquareWorld - DigimonRPG";
+		case 2: ntt = "Lost Memory - Goblin";
+		case 3: ntt = "Samurai - DefKev";
+		}
+		return ntt;
+	}
+	 */
 	
 	/** 
 	 * 매우 정말 정말 중요한 기능이다. 이 함수 하나로 파일들을 관리한다.
 	 */
 	public void selectTrack( int nowSelected ) {
-		//selectedMusic = new PlayAndStopMusic("defalult", false, 4);
-		//selectedMusic.stop();
+		if(selectedMusic != null) selectedMusic.close();
 		titleImage = new ImageIcon(MainAction.class.getResource("../images/" + trackList.get(nowSelected).getTitleImage() )).getImage();
 		selectedImage = new ImageIcon(MainAction.class.getResource("../images/" + trackList.get(nowSelected).getStartImage() )).getImage();
-		selectedMusic = Music.getInstance();
-		selectedMusic.PlayAndStopMusic(trackList.get(nowSelected).getStartMusic(), true, 2);
+		selectedMusic = new PlayAndStopMusic(trackList.get(nowSelected).getStartMusic(), true);
 		selectedMusic.start();
-		
+	}
+	
+	public void selectGameTrack( int nowSelected ) {
+		if(selectedMusic != null) selectedMusic.close();
+		selectedMusic = new PlayAndStopMusic(trackList.get(nowSelected).getGameMusic(), true);
+		selectedMusic.start();
 	}
 	
 	public void selectLeft() {
@@ -348,5 +447,51 @@ public class ScreenImplementation extends JFrame{
 		else nowSelected++;
 		selectTrack(nowSelected);
 	}
+	
+	public void enterMain() {
+		startButton.setVisible(false);
+		quitButton.setVisible(false);
+		selectTrack(nowSelected);
+		background = new ImageIcon(MainAction.class.getResource("../images/mainBackground.jpg")).getImage();
+		leftButton.setVisible(true);
+		rightButton.setVisible(true);
+		easyButton.setVisible(true);
+		hardButton.setVisible(true);
+		backButton.setVisible(false);
+		//gameBottomArea.setVisible(false);
+		isMainScreen = true;
+		isGameScreen = false;
+	}
+	public void moveToMain() {
+		selectTrack(nowSelected);
+		background = new ImageIcon(MainAction.class.getResource("../images/mainBackground.jpg")).getImage();
+		leftButton.setVisible(true);
+		rightButton.setVisible(true);
+		easyButton.setVisible(true);
+		hardButton.setVisible(true);
+		backButton.setVisible(false);
+		//gameBottomArea.setVisible(false);
+		isMainScreen = true;
+		isGameScreen = false;
+		game.close();
+	}
+	public void gameStart(String difficulty) {
+		if(selectedMusic != null) selectedMusic.close();
+		leftButton.setVisible(false);
+		rightButton.setVisible(false);
+		easyButton.setVisible(false);
+		hardButton.setVisible(false);
+		background = new ImageIcon(MainAction.class.getResource("../images/" + trackList.get(nowSelected).getGameImage() )).getImage();
+		backButton.setVisible(true);
+		//gameBottomArea.setVisible(true);
+		//selectGameTrack(nowSelected);
+		isMainScreen = false;
+		isGameScreen = true;
+		setFocusable(true);
+		game = new Game( trackList.get(nowSelected).getTitleName(), difficulty, trackList.get(nowSelected).getGameMusic() );
+	}
+	
+	
+	
 	
 }
